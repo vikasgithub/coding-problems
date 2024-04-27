@@ -24,7 +24,7 @@ class Solution {
 
 # Minimum window subsequence
 
-
+```
 class Solution {
 public String minWindow(String s, String t) {
 
@@ -58,3 +58,99 @@ private int backtrack(char[] ss, char[] tt, int sIndex) {
     }
     return ++sIndex; // sIndex = 1st char match index - 1; ++ to reset
 }
+```
+
+# Longest repeating character
+```
+public class RepeatingCharacter {
+    public static int longestRepeatingCharacterReplacement(String s, int k) {
+        int stringLength = s.length();
+        int lengthOfMaxSubstring = 0;
+        int start = 0;
+        Map<Character, Integer> charFreq = new HashMap<>();
+        int mostFreqCharFrequency = 0;
+
+        for (int end = 0; end < stringLength; ++end) {
+            char currentChar = s.charAt(end);
+            
+            charFreq.put(currentChar, charFreq.getOrDefault(currentChar, 0) + 1);
+            
+            mostFreqCharFrequency = Math.max(mostFreqCharFrequency, charFreq.get(currentChar));
+
+            //number of replacements = end - start + 1 - mostFreqCharFrequency
+            if (end - start + 1 - mostFreqCharFrequency > k) {
+                charFreq.put(s.charAt(start), charFreq.get(s.charAt(start)) - 1);
+                start += 1;
+            }
+
+            lengthOfMaxSubstring = Math.max(lengthOfMaxSubstring, end - start + 1);
+        }
+
+        return lengthOfMaxSubstring;
+    }
+```
+
+# Minimum Window Substring
+```
+    public static String minWindow(String s, String t) {
+        if (t.equals("")) {
+            return "";
+        }
+
+        Map<Character, Integer> reqCount = new HashMap<>();
+        Map<Character, Integer> window = new HashMap<>();
+
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            reqCount.put(c, 1 + reqCount.getOrDefault(c, 0));
+        }
+
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            window.put(c, 0);
+        }
+
+        int current = 0;
+        int required = reqCount.size();
+
+        int[] res = {-1, -1};
+        int resLen = Integer.MAX_VALUE;
+
+        int left = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+
+            if (t.indexOf(c) != -1) {
+                window.put(c, 1 + window.getOrDefault(c, 0));
+            }
+
+            if (reqCount.containsKey(c) && window.get(c).equals(reqCount.get(c))) {
+                current += 1;
+            }
+
+            while (current == required) {
+                if ((right - left + 1) < resLen) {
+                    res[0] = left;
+                    res[1] = right;
+                    resLen = (right - left + 1);
+                }
+
+                char leftChar = s.charAt(left);
+                if (t.indexOf(leftChar) != -1) {
+                    window.put(leftChar, window.get(leftChar) - 1);
+                }
+
+                if (reqCount.containsKey(leftChar) && window.get(leftChar) < reqCount.get(leftChar)) {
+                    current -= 1;
+                }
+                left += 1;
+            }
+        }
+
+        int leftIndex = res[0];
+        int rightIndex = res[1];
+        return resLen != Integer.MAX_VALUE ? s.substring(leftIndex, rightIndex + 1) : "";
+    }
+```
+
+# Longest Substring without Repeating Characters
