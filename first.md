@@ -219,4 +219,139 @@ class Solution {
 }
 ```
 
-## 
+## Two Pointers
+
+### Sum of Three Values
+```
+	public static boolean findSumOfThree(int nums[], int target) {
+		Arrays.sort(nums);
+		int low, high, triples;
+
+		for (int i = 0; i < nums.length - 2; i++) {
+			low = i + 1;
+			high = nums.length - 1;
+
+			while (low < high) {
+				triples = nums[i] + nums[low] + nums[high];
+
+				if (triples == target) {
+					return true;
+				}
+				else if (triples < target) {
+					low++;
+				} 
+				else {
+					high--;
+				}
+			}
+		}
+
+		return false;
+	}
+```
+### Remove nth node from the end of the list
+```
+ public static LinkedListNode removeNthLastNode(LinkedListNode head, int n) {
+    LinkedListNode right = head;
+    LinkedListNode left = head;
+
+    for (int i = 0; i < n; i++) {
+      right = right.next;
+    }
+
+    if (right == null) {
+      return head.next;
+    }
+
+    while (right.next != null) {
+      right = right.next;
+      left = left.next;
+    }
+
+    left.next = left.next.next;
+
+    return head;
+  }
+```
+
+### Sort Colors
+Given an array, colors, which contains a combination of the following three elements:
+- 0 (representing red)
+- 1 (representing white)
+- 2 (representing blue)
+
+Sort the array in place so that the elements of the same color are adjacent, with the colors in the order of red, white, and blue. To improve your problem-solving skills, do not utilize the built-in sort function.
+
+```
+class Solution {
+    public void sortColors(int[] nums) {
+        int i = -1, j = nums.length, k = 0;
+        while (k < j) {
+            if (nums[k] == 0) {
+                swap(nums, ++i, k++);
+            } else if (nums[k] == 2) {
+                swap(nums, --j, k);
+            } else {
+                ++k;
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
+    }
+}
+```
+### Reverse Words in a String
+```
+class Solution {
+    // A function that reverses characters from startRev to endRev in place
+    private static void strRev(char[] str, int startRev, int endRev) {
+        while (startRev < endRev) {
+            char temp = str[startRev];
+            str[startRev] = str[endRev];
+            str[endRev] = temp;
+            startRev++;
+            endRev--;
+        }
+    }
+
+    public static String reverseWords(String sentence) {
+        sentence = sentence.replaceAll("\\s+", " ").trim();
+
+        char[] charArray = sentence.toCharArray();
+        int strLen = charArray.length;
+
+        strRev(charArray, 0, strLen - 1);
+
+        for (int start = 0, end = 0; end <= strLen; ++end) {
+            if (end == strLen || charArray[end] == ' ') {
+                strRev(charArray, start, end - 1);
+                start = end + 1;
+            }
+        }
+
+        return new String(charArray);
+    }
+
+    // Driver code
+    public static void main(String[] args) {
+        List<String> stringsToReverse = Arrays.asList(
+            "Hello World",
+            "a   string   with   multiple   spaces",
+            "Case Sensitive Test 1234",
+            "a 1 b 2 c 3 d 4 e 5",
+            "     trailing spaces",
+            "case test interesting an is this"
+        );
+
+        for (int i = 0; i < stringsToReverse.size(); i++) {
+            System.out.println((i + 1) + ".\tOriginal string: '" + stringsToReverse.get(i) + "'");
+            System.out.println("\tReversed string: '" + reverseWords(stringsToReverse.get(i)) + "'");
+            System.out.println(new String(new char[100]).replace('\0', '-'));
+        }
+    }
+}
+```
