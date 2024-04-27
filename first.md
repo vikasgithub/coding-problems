@@ -1,4 +1,7 @@
-# Sliding window maximum
+# Coding problem solutions
+
+## Pattern: Sliding Window
+### Sliding window maximum
 
 ```
 class Solution {
@@ -22,7 +25,7 @@ class Solution {
 * Then we check from the end of the deque, remove the numbers that are smaller than the current one.
 * Then we can add the number corresponding to peek index to our result for current position.
 
-# Minimum window subsequence
+### Minimum window subsequence
 
 ```
 class Solution {
@@ -60,7 +63,7 @@ private int backtrack(char[] ss, char[] tt, int sIndex) {
 }
 ```
 
-# Longest repeating character
+### Longest repeating character
 ```
 public class RepeatingCharacter {
     public static int longestRepeatingCharacterReplacement(String s, int k) {
@@ -90,7 +93,7 @@ public class RepeatingCharacter {
     }
 ```
 
-# Minimum Window Substring
+### Minimum Window Substring
 ```
     public static String minWindow(String s, String t) {
         if (t.equals("")) {
@@ -153,4 +156,67 @@ public class RepeatingCharacter {
     }
 ```
 
-# Longest Substring without Repeating Characters
+### Longest Substring without Repeating Characters
+- 
+```
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        boolean[] ss = new boolean[128];
+        int ans = 0;
+        for (int start = 0, end = 0; end < s.length(); ++end) {
+            char c = s.charAt(end);
+            while (ss[c]) {
+                ss[s.charAt(start++)] = false;
+            }
+            ss[c] = true;
+            ans = Math.max(ans, end - start + 1);
+        }
+        return ans;
+    }
+}
+```
+
+### Minimum Size Subarray Sum
+Given an array of positive integers, nums, and a positive integer, target, find the minimum length of a contiguous subarray whose sum is greater than or equal to the target. If no such subarray is found, return 0.
+```
+public static int minSubArrayLen(int target, int[] nums) {
+        int windowSize = Integer.MAX_VALUE;
+        int currSubArrSize = 0;
+        int start = 0;
+        int sum = 0;
+
+        for (int end = 0; end < nums.length; end++) {
+            sum += nums[end];
+            while (sum >= target) {
+                currSubArrSize = (end + 1) - start;
+                windowSize = Math.min(windowSize, currSubArrSize);
+                sum -= nums[start];
+                start += 1;
+            }
+        }
+
+        if (windowSize != Integer.MAX_VALUE) {
+            return windowSize;
+        }
+        return 0;
+    }
+
+```
+
+### Best Time to Buy and Sell Stock
+Given an array where the element at the index i represents the price of a stock on day i, find the maximum profit that you can gain by buying the stock once and then selling it.
+```
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length <= 1) return 0;
+        int profit = 0, min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < min) min = prices[i];
+            else profit = Math.max(profit, prices[i] - min);
+        }
+        return profit;
+    }
+}
+```
+
+## 
