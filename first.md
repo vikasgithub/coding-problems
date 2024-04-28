@@ -1611,5 +1611,106 @@ public int kthSmallest(TreeNode root, int k) {
 ```
 ## Tree Breadth first search
 ### Level order traversal 
+```
+public class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> rst = new ArrayList<>();
+	    if (root == null) return rst;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            while (size-- > 0) {
+                TreeNode node = queue.poll();
+                list.add(node.val);
+                if(node.left != null) queue.offer(node.left);
+                if(node.right != null) queue.offer(node.right);
+            }
+            rst.add(list);
+        }
+	    return rst;
+    }
+}
+```
+### Binary Tree Zigzag Level Order Traversal
+```
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> rst = new ArrayList<>();
+        if (root == null) return rst;
+        
+        int level = 0, size = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0 ; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (level % 2 == 0) list.add(node.val);
+                else list.add(0, node.val);
+                if(node.left!= null) queue.offer(node.left);
+                if(node.right!= null) queue.offer(node.right);
+            }
+            level++;
+            rst.add(list);
+        }
+        
+        return rst;
+    }
+```
+### Populating Next Right Pointers in Each Node
+```
+class Solution {
+    public Node connect(Node root) {
+        if (root == null) {
+            return root;
+        }
+        Deque<Node> q = new ArrayDeque<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            Node p = null;
+            for (int n = q.size(); n > 0; --n) {
+                Node node = q.poll();
+                if (p != null) {
+                    p.next = node;
+                }
+                p = node;
+                if (node.left != null) {
+                    q.offer(node.left);
+                }
+                if (node.right != null) {
+                    q.offer(node.right);
+                }
+            }
+        }
+        return root;
+    }
+}
+```
+### Vertical Order Traversal of a Binary Tree
+```
+
+```
+### Symmetric Tree
+```
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return dfs(root, root);
+    }
+
+    private boolean dfs(TreeNode root1, TreeNode root2) {
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        if (root1 == null || root2 == null || root1.val != root2.val) {
+            return false;
+        }
+        return dfs(root1.left, root2.right) && dfs(root1.right, root2.left);
+    }
+}
+```
 
 
