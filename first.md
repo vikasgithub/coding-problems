@@ -1244,7 +1244,7 @@ public class Solution {
         return stack1.pop();
     }
 
-    public int top() {
+    public int top() 
         if (stack1.empty()) {
             pourS2ToS1();
         }
@@ -1252,3 +1252,52 @@ public class Solution {
     }
 }
 ``` 
+### Sort values in a stack
+```
+public static Stack < Integer > sortStack(Stack < Integer > stack) {
+        //1. Use a second tempStack.
+        //2. Pop value from mainStack.
+        //3. If the value is greater or equal to the top of tempStack, then push the value in tempStack
+        //else pop all values from tempStack and push them in mainStack and in the end push value in tempStack and repeat from step 2.
+        //till mainStack is not empty.
+        //4. When mainStack will be empty, tempStack will have sorted values in descending order.
+        //5. Now transfer values from tempStack to mainStack to make values sorted in ascending order.
+        Stack < Integer > newStack = new Stack < > (stack.getMaxSize());
+        while (!stack.isEmpty()) {
+            Integer value = stack.pop();
+            if (!newStack.isEmpty() && value >= newStack.top()) {
+                newStack.push(value);
+            } else {
+                while (!newStack.isEmpty() && newStack.top() > value)
+                    stack.push(newStack.pop());
+                newStack.push(value);
+            }
+        }
+        while (!newStack.isEmpty())
+            stack.push(newStack.pop());
+
+        return stack;
+    }
+```
+### Next greater element
+```
+public static int[] nextGreaterElement(int[] arr) {
+        int[] result = new int[arr.length];
+        int resultIndex = 0;
+        Stack < Integer > stack = new Stack < > (arr.length);
+        // iterate for rest of the elements
+        for (int i = arr.length - 1; i >= 0; i--) {
+            if (!stack.isEmpty()) {
+                while (!stack.isEmpty() && stack.top() <= arr[i]) {
+                    stack.pop();
+                }
+            }
+            if (stack.isEmpty()) {
+                result[i] = -1;
+            } else
+                result[i] = stack.top();
+            stack.push(arr[i]);
+        }
+        return result;
+    }
+```
