@@ -355,3 +355,250 @@ class Solution {
     }
 }
 ```
+## Fast and slow pointers
+### Happy Number
+```
+public boolean isHappy(int n) {
+        Set<Integer> vis = new HashSet<>();
+        //break if number is 1 or is it repeated
+        while (n != 1 && !vis.contains(n)) {
+            vis.add(n);
+            int x = 0;
+            while (n != 0) {
+                x += (n % 10) * (n % 10);
+                n /= 10;
+            }
+            n = x;
+        }
+        return n == 1;
+    }
+```
+### Detect cycle in a LinkedList
+```
+    public static boolean detectCycle(LinkedListNode head) {
+        if (head == null) {
+            return false;
+        }
+    
+        LinkedListNode slow = head;
+        LinkedListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+```
+### Middle of a linked list
+```
+    public static LinkedListNode middleNode(LinkedListNode head) {
+
+        LinkedListNode slow = head;
+        LinkedListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;	
+            fast = fast.next.next; 
+        }
+
+        return slow;
+    }
+```
+### Circular array loop
+```
+class Solution {
+    private int n;
+    private int[] nums;
+
+    public boolean circularArrayLoop(int[] nums) {
+        n = nums.length;
+        this.nums = nums;
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] == 0) {
+                continue;
+            }
+            int slow = i, fast = next(i);
+            while (nums[slow] * nums[fast] > 0 && nums[slow] * nums[next(fast)] > 0) {
+                if (slow == fast) {
+                    if (slow != next(slow)) {
+                        return true;
+                    }
+                    break;
+                }
+                slow = next(slow);
+                fast = next(next(fast));
+            }
+            int j = i;
+            while (nums[j] * nums[next(j)] > 0) {
+                nums[j] = 0;
+                j = next(j);
+            }
+        }
+        return false;
+    }
+
+    private int next(int i) {
+        return (i + nums[i] % n + n) % n;
+    }
+}
+```
+### Palindrome linked list
+- Find the middle node
+- Reverse linked list from middle to the end
+- compare the two halves
+
+```
+class PalindromeList {
+    public static boolean palindrome(LinkedListNode head) {
+       
+        LinkedListNode slow = head;
+        LinkedListNode fast = head;
+        
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        
+        LinkedListNode revertData = LinkedListReversal.reverseLinkedList(slow);
+        boolean check = compareTwoHalves(head, revertData);
+        LinkedListReversal.reverseLinkedList(revertData);
+        
+        if (check) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public static boolean compareTwoHalves(LinkedListNode firstHalf, LinkedListNode secondHalf) {
+        while (firstHalf != null && secondHalf != null) {
+            if (firstHalf.data != secondHalf.data) {
+                return false;
+            } else {
+                firstHalf = firstHalf.next;
+                secondHalf = secondHalf.next;
+            }
+
+
+        }
+        return true;
+    }
+```
+## Modified Binary Search
+### Binary Search
+```
+public static int binarySearch(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (nums[mid] == target) {
+                return mid;
+            }
+            else if (target < nums[mid]) {
+                high = mid - 1;
+            }
+            else if (target > nums[mid]) {
+                low = mid + 1;
+            }
+        }
+
+        return -1;
+    }
+```
+### Search in a rotated array
+```
+public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) return -1;
+        int start = 0, end = nums.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[start] < nums[mid]) { //Land in 1st continous section
+                if (nums[start] <= target && target <= nums[mid]) end = mid;
+                else start = mid;
+            } else { //Land in 2nd continous section
+                if (nums[mid] <= target && target <= nums[end]) start = mid;
+                else end = mid;
+            }
+        }
+        if (nums[start] == target) return start;
+        if (nums[end] == target) return end;
+        
+        return -1;
+    }
+```
+### Find K closest items
+You are given a sorted array of integers, nums, and two integers, target and k. Your task is to return k number of integers that are close to the target value, target. The integers in the output array should be in a sorted order.
+#### Solution 1 
+```
+class Solution {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        List<Integer> ans = Arrays.stream(arr)
+                                .boxed()
+                                .sorted((a, b) -> {
+                                    int v = Math.abs(a - x) - Math.abs(b - x);
+                                    return v == 0 ? a - b : v;
+                                })
+                                .collect(Collectors.toList());
+        ans = ans.subList(0, k);
+        Collections.sort(ans);
+        return ans;
+    }
+}
+```
+#### Solution 2
+````
+    class Solution {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        int l = 0, r = arr.length;
+        while (r - l > k) {
+            if (x - arr[l] <= arr[r - 1] - x) {
+                --r;
+            } else {
+                ++l;
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int i = l; i < r; ++i) {
+            ans.add(arr[i]);
+        }
+        return ans;
+    }
+}
+````
+### Single element in a sorted array
+```
+    public static int singleNonDuplicate(int[] nums) {
+
+        // initilaize the left and right pointer
+        int l = 0;
+        int r = nums.length - 1;
+
+        while (l < r) {
+           
+            // if mid is odd, decrement it to make it even
+            int mid = l + (r - l) / 2;
+            if (mid % 2 == 1) mid--;
+            
+            // if the elements at mid and mid + 1 are the same, then the single element must appear after the midpoint
+            if (nums[mid] == nums[mid + 1]) {
+                l = mid + 2;
+            } 
+            // otherwise, we must search for the single element before the midpoint
+            else {
+                r = mid;
+            }
+        }
+        return nums[l];
+    }
+```
