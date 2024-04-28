@@ -1192,3 +1192,63 @@ class KthLargest {
 ### Reorganize string
 
 
+## Stacks and Queues
+### Generate Binary Numbers from 1 to n Using a Queue
+```
+    //1.Start with Enqueuing 1.
+    //2.Dequeue a number from queue and append 0 to it and enqueue it back to queue.
+    //3.Perform step 2 but with appending 1 to the original number and enqueue back to queue.
+    //Size of Queue should be 1 more than number because for a single number we're enqueuing two
+    public static String[] findBin(int number) {
+        String[] result = new String[number];
+        Queue<String> queue = new Queue<String>(number + 1);
+
+        queue.enqueue("1");
+
+        for (int i = 0; i < number; i++) {
+            System.out.println("111");
+            result[i] = queue.dequeue();
+            String s1 = result[i] + "0";
+            String s2 = result[i] + "1";
+            queue.enqueue(s1);
+            queue.enqueue(s2);
+        }
+
+        return result; //For number = 3 , result = {"1","10","11"};
+    }
+```
+### Implement Queue Using Stack
+```
+public class Solution {
+    private Stack<Integer> stack1;
+    private Stack<Integer> stack2;
+    public void pourS2ToS1(){
+        while (!stack2.empty()) {
+            stack1.push(stack2.peek());
+            stack2.pop();
+        }
+    }
+    public Solution() {
+        stack1 = new Stack<Integer>();
+        stack2 = new Stack<Integer>();  
+    }
+    
+    public void push(int element) {
+        stack2.push(element);
+    }
+
+    public int pop() {
+        if (stack1.empty()) {
+            pourS2ToS1();
+        }
+        return stack1.pop();
+    }
+
+    public int top() {
+        if (stack1.empty()) {
+            pourS2ToS1();
+        }
+        return stack1.peek();
+    }
+}
+``` 
