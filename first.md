@@ -1540,6 +1540,76 @@ class Solution {
     }
 }
 ```
+### Lowest common ancenstor in a binary tree
+```
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        var left = lowestCommonAncestor(root.left, p, q);
+        var right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        }
+        return left == null ? right : left;
+    }
+}
+```
+### Validate binary search tree
+```
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return dfs(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    
+    private boolean dfs(TreeNode node, long min, long max) {
+        if (node == null) return true;
+        if (node.val <= min || node.val >= max) return false;
+        return dfs(node.left, min, node.val) && dfs(node.right, node.val, max);
+    }
+}
+```
+### Maximum depth of a binary tree
+```
+public class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+}
+```
+### Kth Smallest Element in a BST
+```
+public int kthSmallest(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        List<Integer> ans = new ArrayList<>();
+        dfs(root, ans, k);
 
+        return ans.get(ans.size() - 1);
+    }
+
+    private void dfs(TreeNode root, List<Integer> ans, int k) {
+        if (root == null || ans.size() == k) {
+            return;
+        }
+        if (root.left != null) {
+            dfs(root.left, ans, k);
+        }
+        if (ans.size() == k) {
+            return;
+        }
+        ans.add(root.val);
+        if (root.right != null) {
+            dfs(root.right, ans, k);
+        }
+    } 
+```
+## Tree Breadth first search
+### Level order traversal 
 
 
