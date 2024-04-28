@@ -1160,3 +1160,42 @@ public class Main {
     } 
 ```
 
+## Top k elements
+### Kth Largest Element in a Stream
+```
+class KthLargest {
+    public PriorityQueue<Integer> topKHeap;
+    public int k;
+
+	// Constructor to initialize heap and add values in it
+    public KthLargest(int k, int[] nums) {
+        this.k = k;
+        topKHeap = new PriorityQueue<>();
+        for (int element : nums) {
+            add(element);
+        }
+    }
+
+	// Adds element in the heap and return the Kth largest
+    public int add(int val) {
+        if (topKHeap.size() < k) {
+            topKHeap.offer(val);
+        } else if (val > topKHeap.peek()) {
+            topKHeap.poll();
+            topKHeap.offer(val);
+        } 
+
+        return topKHeap.peek();
+    }
+}
+```
+### Reorganize string
+
+## Stacks
+
+## Tree 
+### Pre-Order Traversal in Binary Search Trees
+
+
+
+
