@@ -1021,3 +1021,142 @@ class MedianOfStream {
   }
 }
 ```
+## K-way Merge
+### Merge sorted array
+You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
+```
+class Solution {
+    public void merge(int[] A, int m, int[] B, int n) {
+        // write your code here
+        int index = m + n - 1;
+        while (m > 0 && n > 0) {
+            if (A[m - 1] > B[n - 1]) {
+                A[index--] = A[--m];
+            } else {
+                A[index--] = B[--n];
+            }
+        }//While
+        
+        // Put remain of B
+        while (n > 0) {
+            A[index--] = B[--n];
+        }
+    }
+}
+```
+### Kth Smallest Number in M Sorted Lists
+```
+public static int mThLargest(int[][] arr, int m) { 
+   
+        // Create a min heap. Every 
+        // heap node has first element of an array 
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>(); 
+        for (int i = 0; i < arr.length; i++) { 
+            pq.add(new Pair(arr[i][0], i, 0)); 
+        } 
+   
+        // Now one by one get the minimum element 
+        // from min heap and replace it with next 
+        // element of its array 
+        int count = 0; 
+        int i=0;
+        int j=0;
+        while (count < m && !pq.isEmpty()) { 
+            Pair curr = pq.poll(); 
+   
+            // i ==> Array Number 
+            // j ==> Index in the array number 
+            i = curr.arrayNumber; 
+            j = curr.index; 
+   
+            // The next element belongs to same array as current. 
+            if (j + 1 < arr[i].length) { 
+                pq.add(new Pair(arr[i][j + 1], i, j + 1)); 
+            } 
+            count++; 
+        } 
+        return arr[i][j]; 
+    } 
+```
+### Find K Pairs with Smallest Sums
+You are given two integer arrays nums1 and nums2 sorted in non-decreasing order and an integer k.
+Define a pair (u, v) which consists of one element from the first array and one element from the second array.
+
+Return the k pairs (u1, v1), (u2, v2), ..., (uk, vk) with the smallest sums.
+```
+class Solution {
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        for (int i = 0; i < Math.min(nums1.length, k); ++i) {
+            q.offer(new int[] {nums1[i] + nums2[0], i, 0});
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        while (!q.isEmpty() && k > 0) {
+            int[] element = q.poll();
+            ans.add(Arrays.asList(nums1[e[1]], nums2[e[2]]));
+            --k;
+            if (e[2] + 1 < nums2.length) {
+                q.offer(new int[] {nums1[e[1]] + nums2[e[2] + 1], e[1], e[2] + 1});
+            }
+        }
+        return ans;
+    }
+}
+```
+### Merge k sorted lists
+```
+class Solution {
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        for (int i = 0; i < Math.min(nums1.length, k); ++i) {
+            q.offer(new int[] {nums1[i] + nums2[0], i, 0});
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        while (!q.isEmpty() && k > 0) {
+            int[] e = q.poll();
+            ans.add(Arrays.asList(nums1[e[1]], nums2[e[2]]));
+            --k;
+            if (e[2] + 1 < nums2.length) {
+                q.offer(new int[] {nums1[e[1]] + nums2[e[2] + 1], e[1], e[2] + 1});
+            }
+        }
+        return ans;
+    }
+}
+```
+### Kth smallest element in sorted matrix
+```
+public class Main { 
+    public static int mThLargest(int[][] arr, int m) { 
+   
+        // Create a min heap. Every 
+        // heap node has first element of an array 
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>(); 
+        for (int i = 0; i < arr.length; i++) { 
+            pq.add(new Pair(arr[i][0], i, 0)); 
+        } 
+   
+        // Now one by one get the minimum element 
+        // from min heap and replace it with next 
+        // element of its array 
+        int count = 0; 
+        int i=0;
+        int j=0;
+        while (count < m && !pq.isEmpty()) { 
+            Pair curr = pq.poll(); 
+   
+            // i ==> Array Number 
+            // j ==> Index in the array number 
+            i = curr.arrayNumber; 
+            j = curr.index; 
+   
+            // The next element belongs to same array as current. 
+            if (j + 1 < arr[i].length) { 
+                pq.add(new Pair(arr[i][j + 1], i, j + 1)); 
+            } 
+            count++; 
+        } 
+        return arr[i][j]; 
+    } 
+```
+
