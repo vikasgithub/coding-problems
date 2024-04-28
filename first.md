@@ -602,3 +602,294 @@ class Solution {
         return nums[l];
     }
 ```
+
+## Merge Intervals
+### Merge Intervals
+```
+class Solution {
+    public List<Interval> merge(List<Interval> intervals) {
+        if (intervals == null || intervals.size() <= 1) {
+            return intervals;
+        }
+
+        intervals.sort(Comparator.comparing(interval -> interval.start)); // O(nlogn)
+        int i = 0;
+        while(i < intervals.size() - 1) {
+            Interval curr = intervals.get(i), next = intervals.get(i + 1);
+            if (curr.end >= next.start) {
+                curr.end = curr.end >= next.end ? curr.end : next.end;
+                intervals.remove(i + 1);
+                continue;
+            }
+            i++;
+        }
+        return intervals;
+    }
+}
+```
+### Interval Intersection
+```
+    public static int[][] intervalsIntersection(int[][] intervalLista, int[][] intervalListb) {
+        List<int[]> intersections = new ArrayList<>(); 
+        int i = 0, j = 0;
+
+        while (i < intervalLista.length && j < intervalListb.length) {
+            int start = Math.max(intervalLista[i][0], intervalListb[j][0]);
+            int end = Math.min(intervalLista[i][1], intervalListb[j][1]);
+            
+            if (start <= end) 
+                intersections.add(new int[]{start, end}); 
+            if (intervalLista[i][1] < intervalListb[j][1])
+                i += 1;
+            else
+                j += 1;
+        }
+
+        return intersections.toArray(new int[0][]);
+    }
+```
+### Employee Free time (hard)
+```
+ public static List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        
+        for (int i = 0; i < schedule.size(); i++) {
+            List<Interval> employeeSchedule = schedule.get(i);
+            Interval interval = employeeSchedule.get(0);
+            heap.offer(new int[]{interval.start, i, 0});
+        }
+        
+        List<Interval> result = new ArrayList<>();
+        
+        int previous = schedule.get(heap.peek()[1]).get(heap.peek()[2]).start;
+     
+        while (!heap.isEmpty()) {
+            int[] tuple = heap.poll();
+            int i = tuple[1];
+            int j = tuple[2];
+            
+            Interval interval = schedule.get(i).get(j);
+            
+            if (interval.start > previous) {
+                result.add(new Interval(previous, interval.start));
+            }
+            
+            previous = Math.max(previous, interval.end);
+        
+            if (j + 1 < schedule.get(i).size()) {
+                Interval nextInterval = schedule.get(i).get(j + 1);
+                heap.offer(new int[]{nextInterval.start, i, j + 1});
+            }
+        }
+        return result;
+    }
+```
+
+## In-place reversal of a linked list
+### Reverse linked list
+- Create dummy = head
+- always insert in front of dummy, and set dummy to new head
+- move head = head.next
+```
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null) return head;
+        
+        ListNode dummy = null;
+        while(head != null) {
+            ListNode temp = head.next;
+            head.next = dummy;
+            dummy = head;
+            head = temp;
+        }
+        return dummy;
+    }
+}
+```
+### Reverse node in k - groups
+```
+ class Solution {
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || head.next == null) return head;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy, cur = head;
+        for (int i = 1; cur != null; ++i) {
+            if (i % k == 0) {
+                prev = reverse(prev, cur.next); // prev not included, cur included
+                cur = prev.next;
+            } else {
+                cur = cur.next;
+            }
+        }
+        return dummy.next;
+    }
+
+    private ListNode reverse(ListNode prev, ListNode end) {
+        ListNode cur = prev.next;
+        while (cur.next != end) {
+            // p 1 2 3 end
+            // p 2 1 3 end
+            // p 3 2 1 end   cur always 1
+            ListNode temp = cur.next;
+            cur.next = temp.next;
+            temp.next = prev.next;
+            prev.next = temp;
+        }
+        return cur;
+    }
+}
+```
+### Reorder list
+```
+public class Solution {
+    private ListNode reverse(ListNode head) {
+        ListNode reversedList = null;
+        while (head != null) {
+            ListNode temp = head.next;
+            head.next = reversedList;
+            reversedList = head;
+            head = temp;
+        }
+        return reversedList;
+    }
+
+    private void merge(ListNode head1, ListNode head2) {
+        ListNode dummy = new ListNode(0);
+        int index = 0;
+        while (head1 != null && head2 != null) {
+            if (index % 2 == 0) {
+                dummy.next = head1;
+                head1 = head1.next;
+            } else {
+                dummy.next = head2;
+                head2 = head2.next;
+            }
+            dummy = dummy.next;
+            index += 1;
+        }
+        if (head1 != null) {
+            dummy.next = head1;
+        } else if (head2 != null) {
+            dummy.next = head2;
+        }
+    }
+
+    private ListNode findMiddle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    
+    
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+
+        ListNode mid = findMiddle(head);
+        ListNode tail = reverse(mid.next);
+        mid.next = null;
+
+        merge(head, tail);
+    }
+}
+```
+### Swap kth node
+You are given the head of a linked list, and an integer k.
+
+Return the head of the linked list after swapping the values of the kth node from the beginning and the kth node from the end (the list is 1-indexed)
+```
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        ListNode fast = head;
+        while (--k > 0) {
+            fast = fast.next;
+        }
+        ListNode p = fast;
+        ListNode slow = head;
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        ListNode q = slow;
+        int t = p.val;
+        p.val = q.val;
+        q.val = t;
+        return head;
+    }
+}
+```
+### Reverse nodes in even-length groups
+```
+class ReverseNodes {
+	public static LinkedListNode reverseEvenLengthGroups(LinkedListNode head)
+	{
+		LinkedListNode prev = head;
+		LinkedListNode node, reverse, currNext, curr, prevNext = null;
+		int groupLen = 2;
+		int numNodes = 0;
+		while(prev.next!= null)
+		{
+			node = prev;
+			numNodes = 0;
+			for (int i = 0; i < groupLen; i ++)
+			{
+				if(node.next == null)
+                    break;
+				numNodes += 1;
+				node=node.next;
+			}
+
+			if(numNodes % 2 != 0) {
+			   prev = node; 
+			} else {
+				reverse = node.next;
+				curr = prev.next;
+                for(int j=0; j < numNodes;j++){
+                    currNext = curr.next;
+				    curr.next = reverse;
+				    reverse = curr;
+				    curr = currNext;
+                }
+                prevNext = prev.next;
+				prev.next = node;
+			    prev = prevNext;
+			}
+			groupLen += 1;
+		}
+	    return head;
+	}
+}
+```
+### Swap nodes in pairs
+Thoughts:
+- swap
+- move 2 steps, then swap again.
+- becareful node.next == null, that's the end of list. no swapping.
+```
+ public ListNode swapPairs(ListNode head) {
+    	if (head == null) {
+    		return head;
+    	}
+		ListNode dummy = new ListNode(0);
+		dummy.next = head;
+		head = dummy;
+    	while (head.next != null && head.next.next != null) {
+    		ListNode n1 = head.next;
+    		ListNode n2 = head.next.next;
+    		
+    		n1.next = n2.next;
+    		n2.next = n1;
+    		n1 = n2;
+
+    		head = head.next.next;
+    	}
+    	return dummy.next;
+    }
+```
