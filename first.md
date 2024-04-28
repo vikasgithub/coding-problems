@@ -893,3 +893,131 @@ Thoughts:
     	return dummy.next;
     }
 ```
+## Two Heaps
+### Maximize capital
+```
+public static int maximumCapital(int c, int k, int[] capitals, int[] profits) {
+        int n = capitals.length;
+		int currentCapital = c;
+        PriorityQueue<int[]> capitalMinHeap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        for (int i = 0; i < n; ++i) {
+            capitalMinHeap.offer(new int[] {capitals[i], i});
+        }
+        PriorityQueue<int[]> profitsMaxHeap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+		int i = 0;
+        while (i < k) {
+            while (!capitalMinHeap.isEmpty() && capitalMinHeap.peek()[0] <= currentCapital) {
+				int[] j = capitalMinHeap.poll();
+                profitsMaxHeap.offer(new int[]{profits[j[1]]});
+            }
+            if (profitsMaxHeap.isEmpty()) {
+                break;
+            }
+			int x = profitsMaxHeap.poll()[0];
+            currentCapital += x;
+			i++;
+        }
+        return currentCapital;
+    }
+```
+### Sliding window median
+```
+class Solution {
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>(10, Collections.reverseOrder());
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k <= 0) {
+            return null;
+        }
+        
+        int n = nums.length;
+        double[] rst = new double[n - k + 1];
+        // Build median structure with window
+        for (int i = 0; i < k - 1; i++) {
+            addNum(nums[i]);
+        }
+        
+        // Calculate
+        for (int i = 0; i < n - k + 1; i++) {
+            addNum(nums[i + k - 1]);
+            rst[i] = findMedian();
+            removeNum(nums[i]);
+        }
+        
+        return rst;
+    }
+    
+    private double findMedian() {
+        if (maxHeap.size() == minHeap.size()) {
+            return maxHeap.peek() / 2.0 + minHeap.peek() / 2.0; // be careful with Integer.MAX_VALUE, consider breaking or use long
+        } else {
+            return maxHeap.peek();
+        }
+    }
+    
+    private void addNum(int num) {
+        if (maxHeap.isEmpty()) {
+            maxHeap.add(num);
+            return;
+        }
+        int currentMedian = maxHeap.peek();
+        if (num <= currentMedian) {
+            maxHeap.offer(num);
+        } else {
+            minHeap.offer(num);
+        }
+        balance();
+    }
+    
+    private void removeNum(int num) {
+        int currentMedian = maxHeap.peek();
+        if (num <= currentMedian) {
+            maxHeap.remove(num);
+        } else {
+            minHeap.remove(num);
+        }
+        balance();
+    }
+    
+    // helper
+    private void balance() {
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.offer(maxHeap.poll());
+        } else if (maxHeap.size() < minHeap.size()) {
+            maxHeap.offer(minHeap.poll());
+        }
+    }
+}
+```
+### Median of data stream
+```
+class MedianOfStream {
+
+  PriorityQueue<Integer> maxHeapForSmallNum; 
+  PriorityQueue<Integer> minHeapForLargeNum; 
+
+  public MedianOfStream() {
+    maxHeapForSmallNum = new PriorityQueue<>((a, b) -> b - a);
+    minHeapForLargeNum = new PriorityQueue<>((a, b) -> a - b);
+  }
+
+  public void insertNum(int num) {
+    if (maxHeapForSmallNum.isEmpty() || maxHeapForSmallNum.peek() >= num)
+      maxHeapForSmallNum.add(num);
+    else
+      minHeapForLargeNum.add(num);
+
+    if (maxHeapForSmallNum.size() > minHeapForLargeNum.size() + 1)
+      minHeapForLargeNum.add(maxHeapForSmallNum.poll());
+    else if (maxHeapForSmallNum.size() < minHeapForLargeNum.size())
+      maxHeapForSmallNum.add(minHeapForLargeNum.poll());
+  }
+
+  public double findMedian() {
+    if (maxHeapForSmallNum.size() == minHeapForLargeNum.size()) {
+      return maxHeapForSmallNum.peek() / 2.0 + minHeapForLargeNum.peek() / 2.0;
+    }
+    return maxHeapForSmallNum.peek();
+  }
+}
+```
