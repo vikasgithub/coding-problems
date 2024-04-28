@@ -1191,7 +1191,6 @@ class KthLargest {
 ```
 ### Reorganize string
 
-## Stacks
 
 ## Tree 
 ### Pre-Order Traversal in Binary Search Trees (M-L-R)
